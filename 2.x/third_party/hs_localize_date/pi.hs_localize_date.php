@@ -30,6 +30,10 @@ THE SOFTWARE.
 =========================================================================
 CHANGE LOG :
 
+October 22, 2010
+	- Version 1.1.0
+	- Now has the ability to set global defaults in config.php file.
+
 October 20, 2010
 	- Version 1.0.0
 	- First release
@@ -38,7 +42,7 @@ October 20, 2010
 
 $plugin_info = array(
 						'pi_name'			=> 'HS Localize Date',
-						'pi_version'		=> '1.0.0',
+						'pi_version'		=> '1.1.0',
 						'pi_author'			=> 'Kevin Smith',
 						'pi_author_url'		=> 'http://www.gohearsay.com/',
 						'pi_description'	=> 'Displays dates and times localized based on user preference.',
@@ -55,11 +59,11 @@ class Hs_localize_date
 		$this->EE =& get_instance();
 		
 		$output = '';
-		$us_date = 'F d, Y';
-		$us_time = 'h:ia';
-		$eu_date = 'd F Y';
-		$eu_time = 'G:i';
-		$separator = '@';
+		$us_date = $this->EE->config->item('hsld_us_date') ? str_replace('%', '', $this->EE->config->item('hsld_us_date')) : 'F d, Y';
+		$us_time = $this->EE->config->item('hsld_us_time') ? str_replace('%', '', $this->EE->config->item('hsld_us_time')) : 'h:ia';
+		$eu_date = $this->EE->config->item('hsld_eu_date') ? str_replace('%', '', $this->EE->config->item('hsld_eu_date')) : 'd F Y';
+		$eu_time = $this->EE->config->item('hsld_eu_time') ? str_replace('%', '', $this->EE->config->item('hsld_eu_time')) : 'G:i';
+		$separator = $this->EE->config->item('hsld_separator') ? str_replace('%', '', $this->EE->config->item('hsld_separator')) : '@';
 
 		// Fetch the tagdata
 		if (is_numeric($this->EE->TMPL->tagdata))
@@ -72,14 +76,21 @@ class Hs_localize_date
 		}
 			
 		// Is there a custom format param?
-		$custom = $this->EE->TMPL->fetch_param('custom');
+		$custom = str_replace('%', '', $this->EE->TMPL->fetch_param('custom'));
 		
 		// Custom formats
-		$us_custom = $this->EE->TMPL->fetch_param('us');
-		$eu_custom = $this->EE->TMPL->fetch_param('eu');
+		$us_custom = str_replace('%', '', $this->EE->TMPL->fetch_param('us'));
+		$eu_custom = str_replace('%', '', $this->EE->TMPL->fetch_param('eu'));
 		
 		// Append the time?
-		$include_time = strtolower($this->EE->TMPL->fetch_param('time'));
+		if ($this->EE->TMPL->fetch_param('time'))
+		{
+			$include_time = strtolower($this->EE->TMPL->fetch_param('time'));
+		}
+		else
+		{
+			$include_time = $this->EE->config->item('hsld_include_time') ? $this->EE->config->item('hsld_include_time') : FALSE;
+		}
 
 		// What should we use to separate the date and time?
 		$separator = $this->EE->TMPL->fetch_param('separator') ? $this->EE->TMPL->fetch_param('separator') : $separator;
@@ -207,6 +218,26 @@ custom="" (e.g. custom="%D, %F %d, %Y - %g:%i:%s")*
 - Provide custom date formatting that will override all other parameters and config.php settings.
 
 * For parameters using date formatting codes, full documentation is found in the "Date Variable Formatting" page in the ExpressionEngine docs. The plugin ignores the 'time' and 'separator' parameters if you use either 'us', 'eu', or 'custom'.
+
+=====================================================
+Global Settings
+=====================================================
+I wanted this to remain a simple plugin, so to keep it from growing into a module, you can create global settings that will override the defaults of the plugin.
+
+So for example, the default for US dates in the plugin produces 'October 19, 2010', but suppose you want to have a different look on your site. Easy: just add a few lines to your config.php file.
+
+These are the config items, all of them optional, with examples.
+
+$config['hsld_us_date'] = '%n/%j/%y';
+$config['hsld_us_time'] = '%g:%i%a';
+$config['hsld_eu_date'] = '%n/%j/%y';
+$config['hsld_eu_time'] = '%H:%i';
+$config['hsld_include_time'] = 'include'; (Identical in function to 'time' parameter.)
+$config['hsld_separator'] = 'at'; (Identical in function to 'separator' parameter.)
+
+* Just like with the parameters, you'll notice that the date formatting conforms to the "Date Variable Formatting" page in the ExpressionEngine docs.
+
+Note: Global settings override the plugin's default settings, and plugin tag parameters override both global settings and the plugin's default settings.
 
 <?php
 
