@@ -32,7 +32,7 @@ CHANGE LOG :
 
 October 22, 2010
 	- Version 1.1.0
-	- Now has the ability to set global defaults in config.php file.
+	- New feature: set global defaults in config.php file.
 
 October 20, 2010
 	- Version 1.0.0
