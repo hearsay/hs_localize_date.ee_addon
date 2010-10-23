@@ -222,6 +222,7 @@ custom="" (e.g. custom="%D, %F %d, %Y - %g:%i:%s")*
 =====================================================
 Global Settings
 =====================================================
+
 I wanted this to remain a simple plugin, so to keep it from growing into a module, you can create global settings that will override the defaults of the plugin.
 
 So for example, the default for US dates in the plugin produces 'October 19, 2010', but suppose you want to have a different look on your site. Easy: just add a few lines to your config.php file.
