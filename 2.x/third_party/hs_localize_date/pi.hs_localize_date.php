@@ -25,8 +25,7 @@ THE SOFTWARE.
 =========================================================================
  File: pi.hs_localize_date.php V1.0.0
 -------------------------------------------------------------------------
- Purpose: Redirect to a given location
- http://www.mysite.com or www.mysite.com
+ Purpose: Localize dates/times to a user's preference.
 =========================================================================
 CHANGE LOG :
 
